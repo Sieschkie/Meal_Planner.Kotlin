@@ -1,0 +1,21 @@
+type: choice
+is_multiple_choice: false
+options:
+  - text: the function is invoked
+  - text: the function is completed
+  - text: the function is entered
+  - text: the function is found
+files:
+  - name: src/Main.kt
+    visible: true
+    text: |
+      // You can experiment here, it won’t be checked
+      
+      fun main(args: Array<String>) {
+        // put your code here
+      }
+    learner_created: false
+feedback_link: https://hyperskill.org/learn/step/11551#comment
+status: Unchecked
+record: -1
+local_check: false

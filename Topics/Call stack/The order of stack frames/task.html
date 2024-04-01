@@ -1,0 +1,17 @@
+<h2>The order of stack frames</h2>
+<div class="step-text">
+<p></p>
+<p>There is a small program with three functions:</p>
+<pre><code class="language-kotlin">fun mult(a: Int, b: Int): Int {
+    return a * b
+}
+
+fun printMult(a: Int, b: Int) {
+    println(mult(a, b))
+}
+
+fun main() {
+    printMult(3, 4)
+}</code></pre>
+<p>Sort the lines in the order, in which stack frames will be pushed and removed to/from the call stack when running the <code class="language-kotlin">main</code> function. The first operation should be on the top.</p>
+</div>

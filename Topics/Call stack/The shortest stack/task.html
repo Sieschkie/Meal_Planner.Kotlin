@@ -1,0 +1,29 @@
+<h2>The shortest stack</h2>
+<div class="step-text">
+<p></p>
+<p>As you know, a very long stack may lead to <code class="language-kotlin">StackOverflowError</code>.</p>
+<p>In this problem, you need to invoke a function in <code class="language-kotlin">main</code> to create the shortest stack. Your program should print <code class="language-kotlin">"Hello!"</code> exactly three times.</p>
+<pre><code class="language-kotlin">fun q() {
+    println("Hello!")
+    println("Hello!")
+}
+
+fun f() {
+    println("Hello!")
+    q()
+}
+
+fun g() {
+    println("Hello!")
+    println("Hello!")
+    println("Hello!")
+}
+
+fun h() {
+    g()
+}
+
+fun main() {
+    // What should be invoked here to get the shortest stack?
+}</code></pre>
+</div>

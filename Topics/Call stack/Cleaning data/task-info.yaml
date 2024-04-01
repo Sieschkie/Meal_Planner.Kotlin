@@ -1,0 +1,21 @@
+type: choice
+is_multiple_choice: false
+options:
+  - text: at the same time
+  - text: randomly
+  - text: from the first function to the last function
+  - text: from the last function to the first function
+files:
+  - name: src/Main.kt
+    visible: true
+    text: |
+      // You can experiment here, it won’t be checked
+      
+      fun main(args: Array<String>) {
+        // put your code here
+      }
+    learner_created: false
+feedback_link: https://hyperskill.org/learn/step/11556#comment
+status: Solved
+record: -1
+local_check: false

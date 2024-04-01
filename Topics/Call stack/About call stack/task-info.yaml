@@ -1,0 +1,23 @@
+type: choice
+is_multiple_choice: true
+options:
+  - text: Elements in stack can only be inserted and removed from the top
+  - text: "When your stack contains too many stack frames, it leads to the StackOverflowError"
+  - text: Call stack follows FIFO
+  - text: Call stack follows LIFO
+  - text: Elements in stack can only be inserted and removed from the bottom
+  - text: Elements in stack can only be inserted and removed from both top and bottom
+files:
+  - name: src/Main.kt
+    visible: true
+    text: |
+      // You can experiment here, it won’t be checked
+      
+      fun main(args: Array<String>) {
+        // put your code here
+      }
+    learner_created: false
+feedback_link: https://hyperskill.org/learn/step/20614#comment
+status: Solved
+record: -1
+local_check: false

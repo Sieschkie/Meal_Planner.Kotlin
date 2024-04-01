@@ -1,0 +1,31 @@
+type: sorting
+options:
+  - push printMult frame
+  - pop printMult frame
+  - push mult frame
+  - pop mult frame
+  - push main frame
+  - pop main frame
+files:
+  - name: src/Main.kt
+    visible: true
+    text: |
+      // You can experiment here, it won’t be checked
+      
+      fun main(args: Array<String>) {
+        // put your code here
+      }
+    learner_created: false
+feedback_link: https://hyperskill.org/learn/step/11554#comment
+status: Failed
+feedback:
+  message: Wrong solution
+  time: "Mon, 01 Apr 2024 11:40:08 UTC"
+record: -1
+ordering:
+  - 0
+  - 1
+  - 2
+  - 3
+  - 4
+  - 5
