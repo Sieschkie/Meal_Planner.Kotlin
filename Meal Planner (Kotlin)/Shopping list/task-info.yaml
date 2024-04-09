@@ -771,13 +771,16 @@ files:
   - name: planSaved.txt
     visible: true
     learner_created: true
+  - name: plan.txt
+    visible: true
+    learner_created: true
 feedback_link: https://hyperskill.org/learn/step/11013#comment
 status: Failed
 feedback:
   message: |-
-    Wrong answer in test #1
+    Wrong answer in test #6
 
-    Your output should contain &quot;Unable to save. Plan your meals first.&quot;
+    Line eggs x3 doesn&#39;t exist in file.
 
     Please find below the output of your program during this failed test.
     Note that the &#39;&gt;&#39; character indicates the beginning of the input line.
@@ -787,5 +790,8 @@ feedback:
     What would you like to do (add, show, plan, save, exit)?
     &gt; save
     Input a filename:
-  time: "Tue, 09 Apr 2024 09:10:59 UTC"
+    &gt; plan.txt
+    Saved!
+    What would you like to do (add, show, plan, save, exit)?
+  time: "Tue, 09 Apr 2024 19:19:15 UTC"
 record: 5

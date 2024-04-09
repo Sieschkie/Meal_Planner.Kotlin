@@ -515,6 +515,13 @@ files:
     
     
     learner_created: false
+  - name: meals.db
+    visible: true
+    is_binary: true
+    learner_created: true
 feedback_link: https://hyperskill.org/learn/step/11011#comment
 status: Solved
+feedback:
+  message: Congratulations!
+  time: "Tue, 09 Apr 2024 14:04:47 UTC"
 record: 3
