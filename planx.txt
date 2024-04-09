@@ -1,0 +1,98 @@
+Monday-breakfast Ingredients:
+eggs
+milk
+brot
+salad
+pommes
+meat
+brot
+butter
+
+Monday-lunch Ingredients:
+
+Monday-dinner Ingredients:
+
+Tuesday-breakfast Ingredients:
+eggs
+milk
+brot
+salad
+pommes
+meat
+brot
+butter
+
+Tuesday-lunch Ingredients:
+
+Tuesday-dinner Ingredients:
+
+Wednesday-breakfast Ingredients:
+eggs
+milk
+brot
+salad
+pommes
+meat
+brot
+butter
+
+Wednesday-lunch Ingredients:
+
+Wednesday-dinner Ingredients:
+
+Thursday-breakfast Ingredients:
+eggs
+milk
+brot
+salad
+pommes
+meat
+brot
+butter
+
+Thursday-lunch Ingredients:
+
+Thursday-dinner Ingredients:
+
+Friday-breakfast Ingredients:
+eggs
+milk
+brot
+salad
+pommes
+meat
+brot
+butter
+
+Friday-lunch Ingredients:
+
+Friday-dinner Ingredients:
+
+Saturday-breakfast Ingredients:
+eggs
+milk
+brot
+salad
+pommes
+meat
+brot
+butter
+
+Saturday-lunch Ingredients:
+
+Saturday-dinner Ingredients:
+
+Sunday-breakfast Ingredients:
+eggs
+milk
+brot
+salad
+pommes
+meat
+brot
+butter
+
+Sunday-lunch Ingredients:
+
+Sunday-dinner Ingredients:
+
