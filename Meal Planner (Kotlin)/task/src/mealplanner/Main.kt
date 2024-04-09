@@ -9,28 +9,11 @@ class MealPlanner(private val connection: Connection) {
     private val daysOfWeek = arrayOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
     private val categories = arrayOf("breakfast", "lunch", "dinner")
     private var ingredientsTable: List<String> = listOf()
-    private var planSaved: Boolean = false
-    //был ли сохранен план. доступ между сессиями через файл
-    init {
-        planSaved = readPlanSavedFromFile()
-    }
-
-    private fun readPlanSavedFromFile(): Boolean {
-        val file = File("planSaved.txt")
-        return file.exists() && file.readText() == "true"
-    }
-
-    private fun writePlanSavedToFile() {
-        File("planSaved.txt").writeText(planSaved.toString())
-    }
-
+    private var isPlanSaved: Boolean = false
     // Функция для создания таблиц, если они не существуют
     fun createTableIfNotExists() {
         connection.createStatement().use { statement ->
             //Очистка базы данных
-            //statement.executeUpdate("drop table if exists ingredients")
-            //statement.executeUpdate("drop table if exists meals")
-            //statement.executeUpdate("drop table if exists plan")
             /*statement.executeUpdate("DELETE FROM meals")
             statement.executeUpdate("DELETE FROM ingredients")
             statement.executeUpdate("DELETE FROM plan")
@@ -45,37 +28,6 @@ class MealPlanner(private val connection: Connection) {
         }
     }
 
-    /*fun createTableIfNotExists() {
-        connection.createStatement().use { statement ->
-            val resultSet = statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='meals'")
-            if (!resultSet.next()) {
-                // Создаем таблицу meals
-                statement.executeUpdate("CREATE TABLE meals (meal_id INTEGER PRIMARY KEY AUTOINCREMENT, category TEXT, meal TEXT)")
-                // Вставляем примеры данных в таблицу meals
-                statement.executeUpdate("INSERT INTO meals (category, meal) VALUES ('breakfast', 'Scrambled Eggs')")
-                statement.executeUpdate("INSERT INTO meals (category, meal) VALUES ('lunch', 'Chicken Salad')")
-                statement.executeUpdate("INSERT INTO meals (category, meal) VALUES ('dinner', 'Spaghetti Bolognese')")
-
-                // Создаем таблицу ingredients
-                statement.executeUpdate("CREATE TABLE ingredients(ingredient TEXT, ingredient_id INTEGER PRIMARY KEY AUTOINCREMENT, meal_id INTEGER)")
-                // Вставляем примеры данных в таблицу ingredients
-                // Для каждого блюда вставляем примеры ингредиентов
-                statement.executeUpdate("INSERT INTO ingredients (ingredient, meal_id) VALUES ('eggs', 1)")
-                statement.executeUpdate("INSERT INTO ingredients (ingredient, meal_id) VALUES ('milk', 1)")
-                statement.executeUpdate("INSERT INTO ingredients (ingredient, meal_id) VALUES ('salt', 1)")
-                statement.executeUpdate("INSERT INTO ingredients (ingredient, meal_id) VALUES ('chicken breast', 2)")
-                statement.executeUpdate("INSERT INTO ingredients (ingredient, meal_id) VALUES ('lettuce', 2)")
-                statement.executeUpdate("INSERT INTO ingredients (ingredient, meal_id) VALUES ('tomato', 2)")
-                statement.executeUpdate("INSERT INTO ingredients (ingredient, meal_id) VALUES ('spaghetti', 3)")
-                statement.executeUpdate("INSERT INTO ingredients (ingredient, meal_id) VALUES ('minced meat', 3)")
-                statement.executeUpdate("INSERT INTO ingredients (ingredient, meal_id) VALUES ('tomato sauce', 3)")
-
-                // Создаем таблицу plan
-                statement.executeUpdate("CREATE TABLE plan (option TEXT, category TEXT, meal_id INTEGER)")
-            }
-        }
-    }
-    */
 
     // Функция для добавления блюда в базу данных
     fun add(connection: Connection) {
@@ -232,7 +184,7 @@ class MealPlanner(private val connection: Connection) {
     }
 
 
-    fun plan(connection: Connection): List<String> {
+    fun plan(connection: Connection) {
         val ingredientsList = mutableListOf<String>()
         // Weekly plan map to store the plan for each day
         val weeklyPlan = mutableMapOf<String, MutableMap<String, String>>()
@@ -308,9 +260,31 @@ class MealPlanner(private val connection: Connection) {
             println("Dinner: ${plan["dinner"]}")
             println()
         }
-        planSaved = true
-        writePlanSavedToFile()
-        return ingredientsList
+    }
+
+    fun checkPlan(connection: Connection) {
+        try {
+            connection.createStatement().use { statement ->
+                val result = statement.executeQuery("SELECT COUNT(*) AS count FROM plan")
+                if (result.next()) {
+                    val count = result.getInt("count")
+                    if (count > 0) {
+                        isPlanSaved = true
+                        val ingredientsQuery =
+                            "SELECT ingredient FROM ingredients WHERE meal_id IN (SELECT meal_id FROM plan)"
+                        val ingredientsResult = statement.executeQuery(ingredientsQuery)
+                        val ingredientsList = mutableListOf<String>()
+                        while (ingredientsResult.next()) {
+                            val ingredient = ingredientsResult.getString("ingredient")
+                            ingredientsList.add(ingredient)
+                        }
+                        ingredientsTable = ingredientsList.toList()
+                    }
+                }
+            }
+        } catch (e: SQLException) {
+            println("Error checking plan: ${e.message}")
+        }
     }
 
     fun save(ingredientsList: List<String> ) {
@@ -324,8 +298,7 @@ class MealPlanner(private val connection: Connection) {
             ingredientOccurrences[ingredient] = count + 1
         }
         ingredientOccurrences.forEach {(ingredient, count) ->
-            myFile.appendText("$ingredient x$count")
-            myFile.appendText("\n")
+            myFile.appendText("$ingredient x$count\n")
         }
         println("Saved!")
     }
@@ -347,11 +320,12 @@ class MealPlanner(private val connection: Connection) {
                 }
 
                 "plan" -> {
-                    ingredientsTable = plan(connection)
+                    plan(connection)
                 }
 
                 "save" -> {
-                    if(planSaved){
+                    checkPlan(connection)
+                    if(isPlanSaved){
                         save(ingredientsTable)
                     } else {
                         println("Unable to save. Plan your meals first.")
