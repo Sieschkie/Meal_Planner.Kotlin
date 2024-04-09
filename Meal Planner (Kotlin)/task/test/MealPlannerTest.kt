@@ -26,7 +26,6 @@ val mealsList = mutableListOf<MyMealTestData>(
 class MealPlannerTest : StageTest<Any>() {
 
     @DynamicTest(order = 1)
-    fun normalExe12Test(): CheckResult {
         try {
             val dbFile = File("meals.db")
             if (dbFile.exists()) dbFile.delete()
@@ -35,8 +34,6 @@ class MealPlannerTest : StageTest<Any>() {
         }
 
         val co = CheckOutput()
-        if (!co.start("What would you like to do (add, show, plan, exit)?") )
-            return CheckResult(false, "Your program should ask the user about the required action: \"(add, show, plan, exit)?\"")
 
         val dbUrl = "jdbc:sqlite:meals.db"
         val tables = listOf( dbTable("ingredients", listOf(Pair("ingredient", "text"), Pair("ingredient_id", "integer"), Pair("meal_id", "integer"))),
@@ -58,7 +55,6 @@ class MealPlannerTest : StageTest<Any>() {
     }
 
     @DynamicTest(order = 2)
-    fun normalExe13Test(): CheckResult {
         try {
             val dbFile = File("meals.db")
             if (dbFile.exists()) dbFile.delete()
@@ -68,9 +64,7 @@ class MealPlannerTest : StageTest<Any>() {
 
         try {
             val co = CheckOutput()
-            if (!co.start("What would you like to do (add, show, plan, exit)?"))
                 return CheckResult(false,
-                    "Your program should ask the user about the required action: \"(add, show, plan, exit)?\"")
 
             if (!co.input("add", "Which meal do you want to add (breakfast, lunch, dinner)?"))
                 return CheckResult(false,
@@ -85,9 +79,7 @@ class MealPlannerTest : StageTest<Any>() {
             if (!co.input("salmon, rice, avocado", "The meal has been added!"))
                 return CheckResult(false, "Your output should contain \"The meal has been added!\"")
 
-            if (!co.inputNext("What would you like to do (add, show, plan, exit)?"))
                 return CheckResult(false,
-                    "Your program should ask the user about the required action: \"(add, show, plan, exit)?\"")
 
             if (!co.input("add", "Which meal do you want to add (breakfast, lunch, dinner)?"))
                 return CheckResult(false,
@@ -102,9 +94,7 @@ class MealPlannerTest : StageTest<Any>() {
             if (!co.input("eggs, milk, cheese", "The meal has been added!"))
                 return CheckResult(false, "Your output should contain \"The meal has been added!\"")
 
-            if (!co.inputNext("What would you like to do (add, show, plan, exit)?"))
                 return CheckResult(false,
-                    "Your program should ask the user about the required action: \"(add, show, plan, exit)?\"")
 
             if (!co.input("add", "Which meal do you want to add (breakfast, lunch, dinner)?"))
                 return CheckResult(false,
@@ -119,9 +109,7 @@ class MealPlannerTest : StageTest<Any>() {
             if (!co.input("oats, milk, banana, peanut butter", "The meal has been added!"))
                 return CheckResult(false, "Your output should contain \"The meal has been added!\"")
 
-            if (!co.inputNext("What would you like to do (add, show, plan, exit)?"))
                 return CheckResult(false,
-                    "Your program should ask the user about the required action: \"(add, show, plan, exit)?\"")
 
             if (!co.input("show", "Which category do you want to print (breakfast, lunch, dinner)?"))
                 return CheckResult(false, "Your program should ask the user about the meal category to print: \"(breakfast, lunch, dinner)?\"")
@@ -130,9 +118,7 @@ class MealPlannerTest : StageTest<Any>() {
                     "Name: omelette", "Ingredients:", "eggs", "milk", "cheese"))
                 return CheckResult(false, "Wrong \"show\" output for a saved meal.")
 
-            if (!co.inputNext("What would you like to do (add, show, plan, exit)?"))
                 return CheckResult(false,
-                    "Your program should ask the user about the required action: \"(add, show, plan, exit)?\"")
 
             if (!co.input("show", "Which category do you want to print (breakfast, lunch, dinner)?"))
                 return CheckResult(false, "Your program should ask the user about the meal category to print: \"(breakfast, lunch, dinner)?\"")
@@ -141,9 +127,7 @@ class MealPlannerTest : StageTest<Any>() {
                     "milk", "banana", "peanut butter"))
                 return CheckResult(false, "Wrong \"show\" output for a saved meal.")
 
-            if (!co.inputNext("What would you like to do (add, show, plan, exit)?"))
                 return CheckResult(false,
-                    "Your program should ask the user about the required action: \"(add, show, plan, exit)?\"")
 
             if (!co.input("exit", "Bye!"))
                 return CheckResult(false, "Your output should contain \"Bye!\"")
@@ -158,7 +142,6 @@ class MealPlannerTest : StageTest<Any>() {
     }
 
     @DynamicTest(order = 3)
-    fun normalExe14Test(): CheckResult {
         try {
             val dbFile = File("meals.db")
             if (!dbFile.exists()) return CheckResult(false, "The meals.db database file doesn't exist.")
@@ -167,9 +150,7 @@ class MealPlannerTest : StageTest<Any>() {
         }
         try {
             val co = CheckOutput()
-            if (!co.start("What would you like to do (add, show, plan, exit)?"))
                 return CheckResult(false,
-                    "Your program should ask the user about the required action: \"(add, show, plan, exit)?\"")
 
             if (!co.input("show", "Which category do you want to print (breakfast, lunch, dinner)?"))
                 return CheckResult(false, "Your program should ask the user about the meal category to print: \"(breakfast, lunch, dinner)?\"")
@@ -178,9 +159,7 @@ class MealPlannerTest : StageTest<Any>() {
                     "Name: omelette", "Ingredients:", "eggs", "milk", "cheese"))
                 return CheckResult(false, "Wrong \"show\" output for a saved meal.")
 
-            if (!co.inputNext("What would you like to do (add, show, plan, exit)?"))
                 return CheckResult(false,
-                    "Your program should ask the user about the required action: \"(add, show, plan, exit)?\"")
 
             if (!co.input("show", "Which category do you want to print (breakfast, lunch, dinner)?"))
                 return CheckResult(false, "Your program should ask the user about the meal category to print: \"(breakfast, lunch, dinner)?\"")
@@ -189,9 +168,7 @@ class MealPlannerTest : StageTest<Any>() {
                     "milk", "banana", "peanut butter"))
                 return CheckResult(false, "Wrong \"show\" output for a saved meal.")
 
-            if (!co.inputNext("What would you like to do (add, show, plan, exit)?"))
                 return CheckResult(false,
-                    "Your program should ask the user about the required action: \"(add, show, plan, exit)?\"")
 
             if (!co.input("show", "Which category do you want to print (breakfast, lunch, dinner)?"))
                 return CheckResult(false, "Your program should ask the user about the meal category to print: \"(breakfast, lunch, dinner)?\"")
@@ -215,7 +192,6 @@ class MealPlannerTest : StageTest<Any>() {
     }
 
     @DynamicTest(order = 4)
-    fun normalExe15Test(): CheckResult {
         try {
             val dbFile = File("meals.db")
             if (dbFile.exists()) dbFile.delete()
@@ -225,9 +201,7 @@ class MealPlannerTest : StageTest<Any>() {
 
         try {
             val co = CheckOutput()
-            if (!co.start("What would you like to do (add, show, plan, exit)?"))
                 return CheckResult(false,
-                    "Your program should ask the user about the required action: \"(add, show, plan, exit)?\"")
 
 
             for (meal in mealsList) {
@@ -244,9 +218,7 @@ class MealPlannerTest : StageTest<Any>() {
                 if (!co.input(meal.ingredients.joinToString(","), "The meal has been added!"))
                     return CheckResult(false, "Your output should contain \"The meal has been added!\"")
 
-                if (!co.inputNext("What would you like to do (add, show, plan, exit)?"))
                     return CheckResult(false,
-                        "Your program should ask the user about the required action: \"(add, show, plan, exit)?\"")
 
             }
 

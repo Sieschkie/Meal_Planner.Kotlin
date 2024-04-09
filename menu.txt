@@ -1,0 +1,7 @@
+eggs x7
+milk x7
+brot x14
+salad x7
+pommes x7
+meat x7
+butter x7
