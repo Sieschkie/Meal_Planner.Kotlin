@@ -4,6 +4,7 @@ import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.SQLException
 import java.io.File
+import mealplanner.*
 
 class MealPlanner(private val connection: Connection) {
     private val daysOfWeek = arrayOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
@@ -14,11 +15,6 @@ class MealPlanner(private val connection: Connection) {
     // Функция для создания таблиц, если они не существуют
     fun createTableIfNotExists() {
         connection.createStatement().use { statement ->
-            //Очистка базы данных
-            /*statement.executeUpdate("DELETE FROM meals")
-            statement.executeUpdate("DELETE FROM ingredients")
-            statement.executeUpdate("DELETE FROM plan")
-             */
             val resultSet = statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='meals'")
             if (!resultSet.next()) {
                 statement.executeUpdate("CREATE TABLE meals (meal_id INTEGER PRIMARY KEY AUTOINCREMENT, category TEXT, meal TEXT)")
@@ -28,97 +24,6 @@ class MealPlanner(private val connection: Connection) {
         }
     }
 
-    // Функция для добавления блюда в базу данных
-    fun add(connection: Connection) {
-        val category = readCategory()
-        val name = readMealName()
-        val ingredients = readIngredients()
-
-        try {
-            val mealId = insertOrUpdateMeal(connection, category, name)
-            insertIngredients(connection, mealId, ingredients)
-            println("The meal has been added!")
-        } catch (e: SQLException) {
-            println("Error adding meal: ${e.message}")
-        }
-    }
-
-    // Функция для ввода категории блюда
-    fun readCategory(): String {
-        println("Which meal do you want to add (breakfast, lunch, dinner)?")
-        var category: String
-        do {
-            category = readLine().toString()
-            if (category !in categories) {
-                println("Wrong meal category! Choose from: breakfast, lunch, dinner.")
-            }
-        } while (category !in categories)
-        return category
-    }
-
-    // Функция для ввода названия блюда
-    fun readMealName(): String {
-        println("Input the meal's name:")
-        var name = readLine() ?: ""
-        val nameRegex = Regex("""^[a-zA-Z\s]+$""")
-        while (!nameRegex.matches(name)) {
-            println("Wrong format. Use letters only!")
-            name = readLine() ?: ""
-        }
-        return name
-    }
-
-    // Функция для ввода ингредиентов
-    fun readIngredients(): List<String> {
-        println("Input the ingredients:")
-        var ingredientsInput: String
-        do {
-            ingredientsInput = readLine() ?: ""
-            val ingredients = ingredientsInput.split(",").map(String::trim)
-            if (!ingredients.all { it.matches(Regex("""^[a-zA-Z\s]+$""")) }) {
-                println("Wrong format. Use letters only!")
-            }
-        } while (!ingredientsInput.matches(Regex("""^([a-zA-Z\s]+,)*[a-zA-Z\s]+$""")))
-        return ingredientsInput.split(",").map(String::trim)
-    }
-
-    // Функция для вставки или обновления записи о блюде в таблице meals
-    fun insertOrUpdateMeal(connection: Connection, category: String, name: String): Int {
-        val checkMealQuery = "SELECT meal_id FROM meals WHERE category = ? AND meal = ?"
-        val checkMealPreparedStatement = connection.prepareStatement(checkMealQuery)
-        checkMealPreparedStatement.setString(1, category)
-        checkMealPreparedStatement.setString(2, name)
-        val resultSet = checkMealPreparedStatement.executeQuery()
-
-        return if (!resultSet.next()) {
-            // Вставка блюда в таблицу meals, если оно не существует
-            val insertMealQuery = "INSERT INTO meals (category, meal) VALUES (?, ?)"
-            val mealPreparedStatement = connection.prepareStatement(insertMealQuery)
-            mealPreparedStatement.setString(1, category)
-            mealPreparedStatement.setString(2, name)
-            mealPreparedStatement.executeUpdate()
-
-            // Получение meal_id вставленного блюда
-            val mealIdQuery = "SELECT meal_id FROM meals WHERE meal = ?"
-            val mealIdPreparedStatement = connection.prepareStatement(mealIdQuery)
-            mealIdPreparedStatement.setString(1, name)
-            val mealIdResultSet = mealIdPreparedStatement.executeQuery()
-            mealIdResultSet.getInt("meal_id")
-        } else {
-            resultSet.getInt("meal_id")
-        }
-    }
-
-    // Функция для вставки ингредиентов в таблицу ingredients
-    fun insertIngredients(connection: Connection, mealId: Int, ingredients: List<String>) {
-        val insertIngredientsQuery = "INSERT INTO ingredients (ingredient, meal_id) VALUES (?, ?)"
-        val ingredientsPreparedStatement = connection.prepareStatement(insertIngredientsQuery)
-        for (ingredient in ingredients) {
-            ingredientsPreparedStatement.setString(1, ingredient)
-            ingredientsPreparedStatement.setInt(2, mealId)
-            ingredientsPreparedStatement.executeUpdate()
-        }
-    }
     // Функция для вывода блюд из базы данных
     fun show() {
         var operation: String
@@ -146,7 +51,6 @@ class MealPlanner(private val connection: Connection) {
                         }
                     }
                 }
-
             } while (operation !in categories)
 
             val mealIdQuery = "SELECT meal_id, category, meal FROM meals WHERE category = ?"
@@ -182,14 +86,14 @@ class MealPlanner(private val connection: Connection) {
         }
     }
 
-    fun plan(connection: Connection) {
-                // Weekly plan map to store the plan for each day
+    private fun plan(connection: Connection) {
+        // Weekly plan map to store the plan for each day
         val weeklyPlan = mutableMapOf<String, MutableMap<String, String>>()
         connection.use { conn ->
             // Delete existing plan for the week
-            //val deletePlanQuery = "DELETE FROM plan"
-            //val preparedDeletePlanStatement = conn.prepareStatement(deletePlanQuery)
-            //preparedDeletePlanStatement.executeUpdate()
+            val deletePlanQuery = "DELETE FROM plan"
+            val preparedDeletePlanStatement = conn.prepareStatement(deletePlanQuery)
+            preparedDeletePlanStatement.executeUpdate()
 
             daysOfWeek.forEach { day ->
                 println(day)
@@ -222,7 +126,7 @@ class MealPlanner(private val connection: Connection) {
                         }
                     } while (chosenMeal == null || chosenMealId == null)
 
-                    planMap[category] = chosenMeal!!
+                    planMap[category] = chosenMeal
 
                     // Save the chosen meal and its meal_id to the plan table
                     val insertPlanQuery = "INSERT INTO plan (option, category, meal_id) VALUES (?, ?, ?)"
@@ -237,21 +141,21 @@ class MealPlanner(private val connection: Connection) {
                     val preparedIngredientsStatement = conn.prepareStatement(ingredientsQuery)
                     preparedIngredientsStatement.setInt(1, chosenMealId)
                     val ingredientsResult = preparedIngredientsStatement.executeQuery()
-                        while (ingredientsResult.next()) {
-                            val ingredient = ingredientsResult.getString("ingredient")
-                            ingredientsList.add(ingredient)
-                        }
+                    while (ingredientsResult.next()) {
+                        val ingredient = ingredientsResult.getString("ingredient")
+                        ingredientsList.add(ingredient)
                     }
-                    // Print the plan for the day
-                    println("Yeah! We planned the meals for $day.")
-
-                    // Add the daily plan to the weekly plan
-                    weeklyPlan[day] = planMap
                 }
+                // Print the plan for the day
+                println("Yeah! We planned the meals for $day.")
+
+                // Add the daily plan to the weekly plan
+                weeklyPlan[day] = planMap
             }
+        }
         // Print the whole plan for the week
         weeklyPlan.forEach { (day, plan) ->
-            println("$day")
+            println(day)
             println("Breakfast: ${plan["breakfast"]}")
             println("Lunch: ${plan["lunch"]}")
             println("Dinner: ${plan["dinner"]}")
@@ -279,22 +183,22 @@ class MealPlanner(private val connection: Connection) {
                 }
             }
         } catch (e: SQLException) {
-            println("Error checking plan: ${e.message}")
+            //println("Error checking plan: ${e.message}")
         }
     }
 
-    fun save(ingredientsList: List<String> ) {
+    private fun save(ingredientsList: List<String>) {
         println("Input a filename:")
         val filename = readLine().toString()
-        val myFile = File("$filename")
+        val myFile = File(filename)
         val ingredientOccurrences = mutableMapOf<String, Int>()
         //повторяющиеся ингридиенты пересмотреть и подсчитать
         for (ingredient in ingredientsList) {
             val count = ingredientOccurrences.getOrDefault(ingredient, 0)
             ingredientOccurrences[ingredient] = count + 1
         }
-        ingredientOccurrences.forEach {(ingredient, count) ->
-            if(count > 1) {
+        ingredientOccurrences.forEach { (ingredient, count) ->
+            if (count > 1) {
                 myFile.appendText("$ingredient x$count\n")
             } else {
                 myFile.appendText("$ingredient\n")
@@ -309,7 +213,7 @@ class MealPlanner(private val connection: Connection) {
         //var isPlanSaved: Boolean = false
         do {
             println("What would you like to do (add, show, plan, save, exit)?")
-            var operation = readln().toString().toLowerCase()
+            val operation = readLine().toString()
             when (operation) {
                 "add" -> {
                     add(connection)
@@ -325,19 +229,20 @@ class MealPlanner(private val connection: Connection) {
 
                 "save" -> {
                     checkPlan(connection)
-                    if(isPlanSaved){
+                    if (isPlanSaved) {
                         save(ingredientsList)
-                    } else {
-                        println("Unable to save. Plan your meals first.")
-                    }
+                    } else println("Unable to save. Plan your meals first.")
                 }
+
                 "exit" -> {
                     println("Bye!")
+                    statement.close()
                     return
                 }
+
+                else -> println("Invalid operation. Please try again.")
             }
-        } while (operation != "exit")
-        statement.close()
+        } while (true)
     }
 }
 

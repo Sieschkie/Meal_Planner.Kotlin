@@ -768,6 +768,12 @@ files:
     visible: true
     is_binary: true
     learner_created: true
+  - name: src/mealplanner/DatabaseOperations.kt
+    visible: true
+    learner_created: true
+  - name: src/mealplanner/add.kt
+    visible: true
+    learner_created: true
   - name: plan.txt
     visible: true
     learner_created: true
@@ -790,5 +796,5 @@ feedback:
     &gt; plan.txt
     Saved!
     What would you like to do (add, show, plan, save, exit)?
-  time: "Wed, 10 Apr 2024 11:54:32 UTC"
+  time: "Wed, 10 Apr 2024 12:28:32 UTC"
 record: 5
