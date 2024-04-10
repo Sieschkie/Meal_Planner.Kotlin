@@ -8,8 +8,9 @@ import java.io.File
 class MealPlanner(private val connection: Connection) {
     private val daysOfWeek = arrayOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
     private val categories = arrayOf("breakfast", "lunch", "dinner")
-    private var ingredientsTable: List<String> = listOf()
+    private val ingredientsList: MutableList<String> = mutableListOf()
     private var isPlanSaved: Boolean = false
+
     // Функция для создания таблиц, если они не существуют
     fun createTableIfNotExists() {
         connection.createStatement().use { statement ->
@@ -18,7 +19,6 @@ class MealPlanner(private val connection: Connection) {
             statement.executeUpdate("DELETE FROM ingredients")
             statement.executeUpdate("DELETE FROM plan")
              */
-            //Создание таблиц
             val resultSet = statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='meals'")
             if (!resultSet.next()) {
                 statement.executeUpdate("CREATE TABLE meals (meal_id INTEGER PRIMARY KEY AUTOINCREMENT, category TEXT, meal TEXT)")
@@ -27,7 +27,6 @@ class MealPlanner(private val connection: Connection) {
             }
         }
     }
-
 
     // Функция для добавления блюда в базу данных
     fun add(connection: Connection) {
@@ -183,10 +182,8 @@ class MealPlanner(private val connection: Connection) {
         }
     }
 
-
     fun plan(connection: Connection) {
-        val ingredientsList = mutableListOf<String>()
-        // Weekly plan map to store the plan for each day
+                // Weekly plan map to store the plan for each day
         val weeklyPlan = mutableMapOf<String, MutableMap<String, String>>()
         connection.use { conn ->
             // Delete existing plan for the week
@@ -260,6 +257,7 @@ class MealPlanner(private val connection: Connection) {
             println("Dinner: ${plan["dinner"]}")
             println()
         }
+        isPlanSaved = true
     }
 
     fun checkPlan(connection: Connection) {
@@ -268,17 +266,15 @@ class MealPlanner(private val connection: Connection) {
                 val result = statement.executeQuery("SELECT COUNT(*) AS count FROM plan")
                 if (result.next()) {
                     val count = result.getInt("count")
-                    if (count > 0) {
+                    if (count > 3) {
                         isPlanSaved = true
                         val ingredientsQuery =
                             "SELECT ingredient FROM ingredients WHERE meal_id IN (SELECT meal_id FROM plan)"
                         val ingredientsResult = statement.executeQuery(ingredientsQuery)
-                        val ingredientsList = mutableListOf<String>()
                         while (ingredientsResult.next()) {
                             val ingredient = ingredientsResult.getString("ingredient")
                             ingredientsList.add(ingredient)
                         }
-                        ingredientsTable = ingredientsList.toList()
                     }
                 }
             }
@@ -298,7 +294,11 @@ class MealPlanner(private val connection: Connection) {
             ingredientOccurrences[ingredient] = count + 1
         }
         ingredientOccurrences.forEach {(ingredient, count) ->
-            myFile.appendText("$ingredient x$count\n")
+            if(count > 1) {
+                myFile.appendText("$ingredient x$count\n")
+            } else {
+                myFile.appendText("$ingredient\n")
+            }
         }
         println("Saved!")
     }
@@ -326,7 +326,7 @@ class MealPlanner(private val connection: Connection) {
                 "save" -> {
                     checkPlan(connection)
                     if(isPlanSaved){
-                        save(ingredientsTable)
+                        save(ingredientsList)
                     } else {
                         println("Unable to save. Plan your meals first.")
                     }
