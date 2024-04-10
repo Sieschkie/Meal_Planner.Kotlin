@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite name="MealPlannerTest" tests="1" skipped="0" failures="1" errors="0" timestamp="2024-04-10T12:28:30" hostname="DESKTOP-1CDESHD" time="1.111">
+<testsuite name="MealPlannerTest" tests="1" skipped="0" failures="1" errors="0" timestamp="2024-04-10T14:10:26" hostname="DESKTOP-1CDESHD" time="1.227">
   <properties/>
-  <testcase name="start" classname="MealPlannerTest" time="1.111">
+  <testcase name="start" classname="MealPlannerTest" time="1.227">
     <failure message="java.lang.AssertionError: Wrong answer in test #6&#10;&#10;Line eggs x3 doesn't exist in file.&#10;&#10;Please find below the output of your program during this failed test.&#10;Note that the '&gt;' character indicates the beginning of the input line.&#10;&#10;---&#10;&#10;What would you like to do (add, show, plan, save, exit)?&#10;&gt; save&#10;Input a filename:&#10;&gt; plan.txt&#10;Saved!&#10;What would you like to do (add, show, plan, save, exit)?" type="java.lang.AssertionError">java.lang.AssertionError: Wrong answer in test #6
 
 Line eggs x3 doesn't exist in file.

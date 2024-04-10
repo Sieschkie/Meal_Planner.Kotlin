@@ -1,8 +1,9 @@
 package mealplanner
 
 import java.sql.Connection
+import java.sql.SQLException
 
-// Функция для вставки или обновления записи о блюде в таблице meals
+// Function to insert or update a record about a meal in the meals table
 fun insertOrUpdateMeal(connection: Connection, category: String, name: String): Int {
     val checkMealQuery = "SELECT meal_id FROM meals WHERE category = ? AND meal = ?"
     val checkMealPreparedStatement = connection.prepareStatement(checkMealQuery)
@@ -11,25 +12,27 @@ fun insertOrUpdateMeal(connection: Connection, category: String, name: String): 
     val resultSet = checkMealPreparedStatement.executeQuery()
 
     return if (!resultSet.next()) {
-        // Вставка блюда в таблицу meals, если оно не существует
+        // Inserting the meal into the meals table if it does not exist
         val insertMealQuery = "INSERT INTO meals (category, meal) VALUES (?, ?)"
         val mealPreparedStatement = connection.prepareStatement(insertMealQuery)
         mealPreparedStatement.setString(1, category)
         mealPreparedStatement.setString(2, name)
         mealPreparedStatement.executeUpdate()
 
-        // Получение meal_id вставленного блюда
-        val mealIdQuery = "SELECT meal_id FROM meals WHERE meal = ?"
-        val mealIdPreparedStatement = connection.prepareStatement(mealIdQuery)
-        mealIdPreparedStatement.setString(1, name)
-        val mealIdResultSet = mealIdPreparedStatement.executeQuery()
-        mealIdResultSet.getInt("meal_id")
+        // Getting the meal_id for the newly inserted meal
+        mealPreparedStatement.generatedKeys.use { keys ->
+            if (keys.next()) {
+                keys.getInt(1)
+            } else {
+                throw SQLException("Failed to get meal_id for the newly inserted meal.")
+            }
+        }
     } else {
         resultSet.getInt("meal_id")
     }
 }
 
-// Функция для вставки ингредиентов в таблицу ingredients
+// Function to insert ingredients into the ingredients table
 fun insertIngredients(connection: Connection, mealId: Int, ingredients: List<String>) {
     val insertIngredientsQuery = "INSERT INTO ingredients (ingredient, meal_id) VALUES (?, ?)"
     val ingredientsPreparedStatement = connection.prepareStatement(insertIngredientsQuery)
