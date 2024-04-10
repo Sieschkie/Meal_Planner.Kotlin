@@ -768,13 +768,13 @@ files:
     visible: true
     is_binary: true
     learner_created: true
+  - name: plan.txt
+    visible: true
+    learner_created: true
   - name: src/mealplanner/DatabaseOperations.kt
     visible: true
     learner_created: true
   - name: src/mealplanner/add.kt
-    visible: true
-    learner_created: true
-  - name: plan.txt
     visible: true
     learner_created: true
 feedback_link: https://hyperskill.org/learn/step/11013#comment
@@ -796,5 +796,5 @@ feedback:
     &gt; plan.txt
     Saved!
     What would you like to do (add, show, plan, save, exit)?
-  time: "Wed, 10 Apr 2024 14:10:27 UTC"
+  time: "Wed, 10 Apr 2024 15:21:39 UTC"
 record: 5
