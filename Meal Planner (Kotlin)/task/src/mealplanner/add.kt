@@ -3,7 +3,6 @@ package mealplanner
 import java.sql.Connection
 import java.sql.SQLException
 
-// Функция для добавления блюда в базу данных
 fun add(connection: Connection) {
     val category = readCategory()
     val name = readMealName()
@@ -18,7 +17,6 @@ fun add(connection: Connection) {
     }
 }
 
-// Функция для ввода категории блюда
 fun readCategory(): String {
     println("Which meal do you want to add (breakfast, lunch, dinner)?")
     val categories = arrayOf("breakfast", "lunch", "dinner")
@@ -32,7 +30,6 @@ fun readCategory(): String {
     return category
 }
 
-// Функция для ввода названия блюда
 fun readMealName(): String {
     println("Input the meal's name:")
     var name = readLine() ?: ""
@@ -44,7 +41,6 @@ fun readMealName(): String {
     return name
 }
 
-// Функция для ввода ингредиентов
 fun readIngredients(): List<String> {
     println("Input the ingredients:")
     var ingredientsInput: String

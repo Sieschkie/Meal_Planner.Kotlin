@@ -4,7 +4,6 @@ import java.sql.Connection
 import java.sql.DriverManager
 import java.sql.SQLException
 import java.io.File
-import mealplanner.*
 
 class MealPlanner(private val connection: Connection) {
     private val daysOfWeek = arrayOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
@@ -12,7 +11,7 @@ class MealPlanner(private val connection: Connection) {
     private val ingredientsList: MutableList<String> = mutableListOf()
     private var isPlanSaved: Boolean = false
 
-    // Функция для создания таблиц, если они не существуют
+    // Function to create tables if they do not exist
     fun createTableIfNotExists() {
         connection.createStatement().use { statement ->
             val resultSet = statement.executeQuery("SELECT name FROM sqlite_master WHERE type='table' AND name='meals'")
@@ -24,7 +23,7 @@ class MealPlanner(private val connection: Connection) {
         }
     }
 
-    // Функция для вывода блюд из базы данных
+    // Function to display meals from the database
     fun show() {
         var operation: String
         connection.createStatement().use { statement ->
@@ -34,10 +33,10 @@ class MealPlanner(private val connection: Connection) {
 
                 if (operation !in categories) {
                     println("Wrong meal category! Choose from: breakfast, lunch, dinner.")
-                    continue // Пропускаем остаток цикла и снова запрашиваем категорию
+                    continue // Skip the rest of the loop and request category again
                 }
 
-                // Проверяем существует ли введенная пользователем категория в базе данных
+                // Check if the category entered by the user exists in the database
                 val categoryExistsQuery = "SELECT COUNT(*) AS count FROM meals WHERE category = ?"
                 connection.prepareStatement(categoryExistsQuery).use { categoryExistsPreparedStatement ->
                     categoryExistsPreparedStatement.setString(1, operation)
@@ -192,7 +191,7 @@ class MealPlanner(private val connection: Connection) {
         val filename = readLine().toString()
         val myFile = File(filename)
         val ingredientOccurrences = mutableMapOf<String, Int>()
-        //повторяющиеся ингридиенты пересмотреть и подсчитать
+        // Check and count duplicate ingredients
         for (ingredient in ingredientsList) {
             val count = ingredientOccurrences.getOrDefault(ingredient, 0)
             ingredientOccurrences[ingredient] = count + 1
@@ -207,7 +206,7 @@ class MealPlanner(private val connection: Connection) {
         println("Saved!")
     }
 
-    // Функция для выполнения запросов пользователя
+    // Function to execute user queries
     fun ask(connection: Connection) {
         val statement = connection.createStatement()
         //var isPlanSaved: Boolean = false
